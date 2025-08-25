@@ -86,21 +86,21 @@ const AircraftDiagram = ({ weights, unit }: { weights: Weights; unit: string }) 
         aria-label="Cessna 182T Diagram"
         className="w-full h-auto"
       >
-        <g fill="#E2E8F0" stroke="#64748B" strokeWidth="1">
-          {/* Fuselage */}
-          <path d="M150 10 C 170 30, 180 80, 180 120 L 180 220 C 180 240, 170 250, 150 260 C 130 250, 120 240, 120 220 L 120 120 C 120 80, 130 30, 150 10 Z" />
+        <g fill="#E2E8F0" stroke="#64748B" strokeWidth="1.5">
+          {/* Main Fuselage */}
+          <path d="M150 20 Q160 30, 165 60 L170 180 Q170 230, 150 250 Q130 230, 130 180 L135 60 Q140 30, 150 20 Z" />
           
           {/* Wings */}
-          <path d="M120 120 L 30 110 C 20 108, 20 132, 30 130 L 120 140 Z" />
-          <path d="M180 120 L 270 110 C 280 108, 280 132, 270 130 L 180 140 Z" />
+          <path d="M138 90 L30 80 Q20 78, 20 95 L35 100 L139 110 Z" />
+          <path d="M162 90 L270 80 Q280 78, 280 95 L265 100 L161 110 Z" />
           
           {/* Tail */}
-          <path d="M125 255 L 100 270 C 95 272, 95 278, 100 280 L 125 265 Z" />
-          <path d="M175 255 L 200 270 C 205 272, 205 278, 200 280 L 175 265 Z" />
-          <path d="M150 258 L 150 220 L 160 225 L 160 250 C 160 255, 155 258, 150 258 Z L 140 250 C 140 255, 145 258, 150 258 Z L 140 225 L 150 220" />
-
-          {/* Propeller */}
-          <circle cx="150" cy="10" r="10" fill="#CBD5E1" />
+          <path d="M150 250 L150 220 L125 245 L110 260 Q105 262, 105 255 L120 250 Z" />
+          <path d="M150 250 L150 220 L175 245 L190 260 Q195 262, 195 255 L180 250 Z" />
+          <path d="M150 250 L145 270 Q150 275, 155 270 L150 250 Z" />
+          
+          {/* Propeller Spinner */}
+          <path d="M150 20 Q145 10, 150 0 Q155 10, 150 20 Z" fill="#CBD5E1" />
         </g>
       </svg>
       <div className="absolute inset-0 text-xs font-semibold text-foreground">
@@ -111,7 +111,7 @@ const AircraftDiagram = ({ weights, unit }: { weights: Weights; unit: string }) 
         {/* Rear Seats */}
         <div className="absolute top-[52%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.rearSeats)}</div>
         {/* Fuel */}
-        <div className="absolute top-[43%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-blue-600">{fuelDisplay}</div>
+        <div className="absolute top-[38%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-blue-600">{fuelDisplay}</div>
         {/* Baggage A */}
         <div className="absolute top-[68%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageA)}</div>
         {/* Baggage B */}

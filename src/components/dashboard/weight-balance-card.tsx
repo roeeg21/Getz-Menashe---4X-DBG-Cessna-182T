@@ -289,14 +289,16 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
         <AircraftDiagram weights={weights} unit={unitLabel} />
 
         {/* Inputs */}
-        <WeightInput icon={User} label={STATIONS.pilot.label} value={getDisplayValue(weights.pilot)} onChange={e => handleWeightChange('pilot', e.target.value)} unit={unitLabel} />
-        <WeightInput icon={User} label={STATIONS.coPilot.label} value={getDisplayValue(weights.coPilot)} onChange={e => handleWeightChange('coPilot', e.target.value)} unit={unitLabel} />
-        <WeightInput icon={User} label={STATIONS.rearSeats.label} value={getDisplayValue(weights.rearSeats)} onChange={e => handleWeightChange('rearSeats', e.target.value)} unit={unitLabel} />
-        <WeightInput icon={Fuel} label={STATIONS.fuel.label} value={fuelGal} onChange={e => handleFuelChange(e.target.value)} unit="gal" max={LIMITS.fuelMaxGal} />
-        <WeightInput icon={Droplets} label="Fuel Burn" value={plannedFuelBurnGal} onChange={e => handleFuelBurnChange(e.target.value)} unit="gal" />
-        <WeightInput icon={Luggage} label={STATIONS.baggageA.label} value={getDisplayValue(weights.baggageA)} onChange={e => handleWeightChange('baggageA', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageAMax / KG_TO_LB) : LIMITS.baggageAMax} />
-        <WeightInput icon={Luggage} label={STATIONS.baggageB.label} value={getDisplayValue(weights.baggageB)} onChange={e => handleWeightChange('baggageB', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageBMax / KG_TO_LB) : LIMITS.baggageBMax}/>
-        <WeightInput icon={Luggage} label={STATIONS.baggageC.label} value={getDisplayValue(weights.baggageC)} onChange={e => handleWeightChange('baggageC', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageCMax / KG_TO_LB) : LIMITS.baggageCMax}/>
+        <div className="space-y-2">
+            <WeightInput icon={User} label={STATIONS.pilot.label} value={getDisplayValue(weights.pilot)} onChange={e => handleWeightChange('pilot', e.target.value)} unit={unitLabel} />
+            <WeightInput icon={User} label={STATIONS.coPilot.label} value={getDisplayValue(weights.coPilot)} onChange={e => handleWeightChange('coPilot', e.target.value)} unit={unitLabel} />
+            <WeightInput icon={User} label={STATIONS.rearSeats.label} value={getDisplayValue(weights.rearSeats)} onChange={e => handleWeightChange('rearSeats', e.target.value)} unit={unitLabel} />
+            <WeightInput icon={Fuel} label={STATIONS.fuel.label} value={fuelGal} onChange={e => handleFuelChange(e.target.value)} unit="gal" max={LIMITS.fuelMaxGal} />
+            <WeightInput icon={Droplets} label="Fuel Burn" value={plannedFuelBurnGal} onChange={e => handleFuelBurnChange(e.target.value)} unit="gal" />
+            <WeightInput icon={Luggage} label={STATIONS.baggageA.label} value={getDisplayValue(weights.baggageA)} onChange={e => handleWeightChange('baggageA', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageAMax / KG_TO_LB) : LIMITS.baggageAMax} />
+            <WeightInput icon={Luggage} label={STATIONS.baggageB.label} value={getDisplayValue(weights.baggageB)} onChange={e => handleWeightChange('baggageB', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageBMax / KG_TO_LB) : LIMITS.baggageBMax}/>
+            <WeightInput icon={Luggage} label={STATIONS.baggageC.label} value={getDisplayValue(weights.baggageC)} onChange={e => handleWeightChange('baggageC', e.target.value)} unit={unitLabel} max={isKg ? Math.round(LIMITS.baggageCMax / KG_TO_LB) : LIMITS.baggageCMax}/>
+        </div>
         
         {isBaggageOverLimit && (
           <Alert variant="destructive">
@@ -420,3 +422,5 @@ function CalculationRow({ label, value, isBold = false }: { label: string, value
     </div>
   );
 }
+
+    

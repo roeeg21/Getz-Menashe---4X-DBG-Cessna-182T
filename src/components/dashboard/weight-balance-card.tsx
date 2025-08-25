@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -68,38 +67,6 @@ const isCgWithinEnvelope = (weight: number, cg: number): boolean => {
   }
 
   return cg >= forwardLimit;
-};
-
-const AircraftDiagram = ({ weights, unit }: { weights: Weights; unit: string }) => {
-  const getDisplayValue = (lbs: number) => {
-    const value = unit === 'kg' ? Math.round(lbs / KG_TO_LB) : lbs;
-    return value > 0 ? `${value}${unit}` : '';
-  };
-
-  const fuelGal = Math.round(weights.fuel / GAL_TO_LB);
-  const fuelDisplay = fuelGal > 0 ? `${fuelGal}gal` : '';
-
-  return (
-    <div className="relative my-4 w-full max-w-sm mx-auto aspect-[1/1]">
-      <Image
-        src="/cessna-182t-schematic.png"
-        alt="Cessna 182T Diagram"
-        layout="fill"
-        objectFit="contain"
-        data-ai-hint="airplane schematic"
-      />
-      <div className="absolute inset-0 text-xs font-semibold text-foreground">
-        {/* Positioning based on the new image */}
-        <div className="absolute top-[28%] left-[45%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.pilot)}</div>
-        <div className="absolute top-[28%] left-[55%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.coPilot)}</div>
-        <div className="absolute top-[43%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.rearSeats)}</div>
-        <div className="absolute top-[34%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-blue-600">{fuelDisplay}</div>
-        <div className="absolute top-[60%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageA)}</div>
-        <div className="absolute top-[68%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageB)}</div>
-        <div className="absolute top-[75%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageC)}</div>
-      </div>
-    </div>
-  );
 };
 
 export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) {
@@ -264,8 +231,6 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
       </CardHeader>
       <CardContent className="space-y-4">
         
-        <AircraftDiagram weights={weights} unit={unitLabel} />
-
         {/* Inputs */}
         <div className="space-y-2">
             <WeightInput icon={User} label={STATIONS.pilot.label} value={getDisplayValue(weights.pilot)} onChange={e => handleWeightChange('pilot', e.target.value)} unit={unitLabel} />

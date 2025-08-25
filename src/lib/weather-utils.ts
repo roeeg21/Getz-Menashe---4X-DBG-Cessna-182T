@@ -2,57 +2,71 @@ export type FlightCategory = 'VFR' | 'MVFR' | 'IFR' | 'LIFR';
 
 const SM_TO_METERS = 1609.34;
 
-export const getFlightCategory = (weatherString: string): FlightCategory => {
-  let visibility = Infinity;
-  let ceiling = Infinity;
+export const getFlightCategory = (weatherString: string): FlightCategory | null => {
+  if (!weatherString || typeof weatherString !== 'string') {
+    return null;
+  }
+
+  // Handle cases where data is not available
+  if (weatherString === 'N/A' || weatherString === 'Error loading data.') {
+    return null;
+  }
+
+  let visibilityInMiles = Infinity;
+  let ceilingInFeet = Infinity;
 
   // --- Visibility Parsing ---
-  const visRegex = /(\d{4}SM|\d{1,2}SM|\d\/\d{1,2}SM|\d{4})/;
+  // Improved regex to find visibility, including fractions and standard codes.
+  // P6SM = 6+ SM, 1 1/2SM, 1/2SM, 10SM, 9999 (10km+), 3000 (3000m)
+  const visRegex = /(P?(\d+\s)?(\d\/\d)?SM|\d{4}(?!\d))/;
   const visMatch = weatherString.match(visRegex);
 
-  if (visMatch) {
+  if (weatherString.includes('CAVOK')) {
+    visibilityInMiles = 10;
+    ceilingInFeet = Infinity;
+  } else if (visMatch) {
     let visStr = visMatch[0];
-    if (visStr.endsWith('SM')) {
-      visStr = visStr.replace('SM', '');
-      if (visStr.includes('/')) {
+    if (visStr.includes('SM')) {
+      visStr = visStr.replace('SM', '').trim();
+      if (visStr.startsWith('P')) { // P6SM -> 6+
+        visibilityInMiles = parseFloat(visStr.substring(1));
+      } else if (visStr.includes(' ')) { // "1 1/2"
+        const [whole, frac] = visStr.split(' ');
+        const [num, den] = frac.split('/').map(Number);
+        visibilityInMiles = Number(whole) + (num / den);
+      } else if (visStr.includes('/')) { // "1/2"
         const [num, den] = visStr.split('/').map(Number);
-        visibility = (num / den) * SM_TO_METERS;
+        visibilityInMiles = num / den;
       } else {
-        visibility = Number(visStr) * SM_TO_METERS;
+        visibilityInMiles = parseFloat(visStr);
       }
     } else if (visStr === '9999') {
-      visibility = 10000; // 10km or more
-    } else {
-      visibility = Number(visStr);
+      visibilityInMiles = 7; // Standard for 10km+
+    } else { // Meters
+      visibilityInMiles = Number(visStr) / SM_TO_METERS;
     }
   }
-  
-  // CAVOK means Ceiling and Visibility OK -> VFR
-  if (weatherString.includes('CAVOK')) {
-    visibility = 10000;
-    ceiling = 10000;
-  }
-  
+
   // --- Ceiling Parsing ---
+  // A ceiling is the first 'Broken' (BKN) or 'Overcast' (OVC) layer.
   const cloudRegex = /(BKN|OVC)(\d{3})/g;
   let match;
   while ((match = cloudRegex.exec(weatherString)) !== null) {
     const cloudAltitude = parseInt(match[2], 10) * 100;
-    if (cloudAltitude < ceiling) {
-      ceiling = cloudAltitude;
+    // The lowest BKN or OVC layer is the ceiling
+    if (cloudAltitude < ceilingInFeet) {
+      ceilingInFeet = cloudAltitude;
     }
   }
 
-  // --- Determine Category ---
-  const visMiles = visibility / SM_TO_METERS;
-  
-  if (visMiles < 1 || ceiling < 500) {
+  // --- Determine Category based on lowest value ---
+  if (visibilityInMiles < 1 || ceilingInFeet < 500) {
     return 'LIFR';
   }
-  if (visMiles < 3 || ceiling < 1000) {
+  if (visibilityInMiles < 3 || ceilingInFeet < 1000) {
     return 'IFR';
   }
-  if (visMiles <= 5 || ceiling <= 3000) {
+  if (visibilityInMiles <= 5 || ceilingInFeet <= 3000) {
     return 'MVFR';
   }
 

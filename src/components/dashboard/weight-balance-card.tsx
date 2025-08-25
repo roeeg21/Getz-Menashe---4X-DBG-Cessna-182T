@@ -87,20 +87,20 @@ const AircraftDiagram = ({ weights, unit }: { weights: Weights; unit: string }) 
         className="w-full h-auto"
       >
         <g fill="#E2E8F0" stroke="#64748B" strokeWidth="1.5">
+          {/* Empennage (Tail Section) */}
+          <path d="M150 250 L 120 275 L 125 280 L 150 265 Z" />
+          <path d="M150 250 L 180 275 L 175 280 L 150 265 Z" />
+          <path d="M150 265 L 145 280 L 155 280 Z" />
+
           {/* Main Fuselage */}
-          <path d="M150 20 Q160 30, 165 60 L170 180 Q170 230, 150 250 Q130 230, 130 180 L135 60 Q140 30, 150 20 Z" />
-          
+          <path d="M150 20 C160 25, 175 40, 175 80 L 170 220 C 170 240, 160 250, 150 250 C 140 250, 130 240, 130 220 L 125 80 C 125 40, 140 25, 150 20 Z" />
+
           {/* Wings */}
-          <path d="M138 90 L30 80 Q20 78, 20 95 L35 100 L139 110 Z" />
-          <path d="M162 90 L270 80 Q280 78, 280 95 L265 100 L161 110 Z" />
-          
-          {/* Tail */}
-          <path d="M150 250 L150 220 L125 245 L110 260 Q105 262, 105 255 L120 250 Z" />
-          <path d="M150 250 L150 220 L175 245 L190 260 Q195 262, 195 255 L180 250 Z" />
-          <path d="M150 250 L145 270 Q150 275, 155 270 L150 250 Z" />
-          
+          <path d="M125 90 L 25 105 L 20 95 L 125 85 Z" />
+          <path d="M175 90 L 275 105 L 280 95 L 175 85 Z" />
+
           {/* Propeller Spinner */}
-          <path d="M150 20 Q145 10, 150 0 Q155 10, 150 20 Z" fill="#CBD5E1" />
+          <path d="M150 20 Q140 10, 150 0 Q160 10, 150 20 Z" fill="#CBD5E1" />
         </g>
       </svg>
       <div className="absolute inset-0 text-xs font-semibold text-foreground">

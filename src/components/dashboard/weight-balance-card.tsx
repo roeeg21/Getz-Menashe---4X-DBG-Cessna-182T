@@ -74,48 +74,91 @@ const AircraftDiagram = ({ weights, unit }: { weights: Weights; unit: string }) 
     const value = unit === 'kg' ? Math.round(lbs / KG_TO_LB) : lbs;
     return value > 0 ? `${value}${unit}` : '';
   };
-  
+
   const fuelGal = Math.round(weights.fuel / GAL_TO_LB);
   const fuelDisplay = fuelGal > 0 ? `${fuelGal}gal` : '';
 
+  const jsonSpec = {
+      "style": { "stroke": "#000000", "stroke_width": 2, "fill": "#FFFFFF", "line_cap": "round", "line_join": "round" },
+      "draw_order": [ "left_wing", "right_wing", "fuselage_main", "nose_spinner", "canopy", "left_wing_panel", "right_wing_panel", "left_flap_split", "left_aileron_split", "right_flap_split", "right_aileron_split", "left_wing_hatch", "fuel_cap_left", "fuel_cap_right", "hstab_left", "hstab_right", "elevator_hinge", "vstab", "rudder_hinge" ],
+      "shapes": {
+          "fuselage_main": { "type": "polygon", "points": [ [485, 80], [515, 80], [530, 220], [530, 640], [520, 880], [505, 930], [495, 930], [480, 880], [470, 640], [470, 220] ] },
+          "nose_spinner": { "type": "polygon", "points": [[500, 40], [517, 80], [483, 80]] },
+          "canopy": { "type": "ellipse", "center": [500, 300], "rx": 58, "ry": 46 },
+          "left_wing": { "type": "polygon", "points": [ [470, 245], [135, 245], [75, 265], [135, 435], [470, 435] ] },
+          "right_wing": { "type": "polygon", "points": [ [530, 245], [865, 245], [925, 265], [865, 435], [530, 435] ] },
+          "left_wing_panel": { "type": "polyline", "points": [[135, 340], [470, 340]] },
+          "right_wing_panel": { "type": "polyline", "points": [[530, 340], [865, 340]] },
+          "left_flap_split":   { "type": "polyline", "points": [[330, 245], [330, 435]] },
+          "left_aileron_split":{ "type": "polyline", "points": [[205, 245], [205, 435]] },
+          "right_flap_split":  { "type": "polyline", "points": [[670, 245], [670, 435]] },
+          "right_aileron_split":{ "type": "polyline", "points": [[795, 245], [795, 435]] },
+          "left_wing_hatch": { "type": "rect", "x": 165, "y": 270, "width": 44, "height": 26 },
+          "fuel_cap_left":  { "type": "circle", "center": [458, 320], "r": 10 },
+          "fuel_cap_right": { "type": "circle", "center": [542, 320], "r": 10 },
+          "hstab_left": { "type": "polygon", "points": [ [488, 720], [365, 720], [315, 752], [365, 785], [488, 785] ] },
+          "hstab_right": { "type": "polygon", "points": [ [512, 720], [635, 720], [685, 752], [635, 785], [512, 785] ] },
+          "elevator_hinge": { "type": "polyline", "points": [[365, 775], [488, 775], [512, 775], [635, 775]] },
+          "vstab": { "type": "polygon", "points": [[487, 705], [513, 705], [513, 875], [500, 895], [487, 875]] },
+          "rudder_hinge": { "type": "polyline", "points": [[500, 720], [500, 880]] }
+      }
+  };
+
+  const renderShape = (name: string) => {
+    const shape = (jsonSpec.shapes as any)[name];
+    const { style } = jsonSpec;
+    const commonProps = {
+        stroke: style.stroke,
+        strokeWidth: style.stroke_width,
+        fill: shape.fill || style.fill,
+        strokeLinecap: style.line_cap as "round",
+        strokeLinejoin: style.line_join as "round",
+    };
+
+    switch (shape.type) {
+        case 'polygon':
+            return <polygon key={name} points={shape.points.map((p: number[]) => p.join(',')).join(' ')} {...commonProps} />;
+        case 'polyline':
+             return <polyline key={name} points={shape.points.map((p: number[]) => p.join(',')).join(' ')} {...commonProps} fill="none" />;
+        case 'ellipse':
+            return <ellipse key={name} cx={shape.center[0]} cy={shape.center[1]} rx={shape.rx} ry={shape.ry} {...commonProps} />;
+        case 'circle':
+            return <circle key={name} cx={shape.center[0]} cy={shape.center[1]} r={shape.r} {...commonProps} />;
+        case 'rect':
+            return <rect key={name} x={shape.x} y={shape.y} width={shape.width} height={shape.height} {...commonProps} />;
+        default:
+            return null;
+    }
+  };
+
   return (
-     <div className="relative my-4 w-full max-w-sm mx-auto p-4">
+    <div className="relative my-4 w-full max-w-sm mx-auto p-4">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 1000 1000"
         aria-label="Cessna 182T Diagram"
         className="w-full h-auto"
       >
-        <g stroke="#000000" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-            {/* Wings drawn first to be in the background */}
-            <polygon fill="#FFFFFF" points="470,250 120,250 60,270 120,430 470,430" />
-            <polygon fill="#FFFFFF" points="530,250 880,250 940,270 880,430 530,430" />
-            {/* Fuselage and Nose */}
-            <polygon fill="#FFFFFF" points="500,70 530,210 530,680 515,920 500,950 485,920 470,680 470,210" />
-            <polygon fill="#FFFFFF" points="500,50 515,70 485,70" />
-            {/* Tail (Empennage) */}
-            <polygon fill="#FFFFFF" points="485,700 440,700 420,900 485,900" />
-            <polygon fill="#FFFFFF" points="515,700 560,700 580,900 515,900" />
-            <polygon fill="#FFFFFF" points="500,950 500,750 480,720 520,720" />
-            {/* Canopy */}
-            <ellipse cx="500" cy="260" rx="60" ry="50" fill="#FFFFFF" />
+        <g>
+          {jsonSpec.draw_order.map(shapeName => renderShape(shapeName))}
         </g>
       </svg>
       <div className="absolute inset-0 text-xs font-semibold text-foreground">
+        {/* Positioning based on the new SVG coordinates (viewBox 1000x1000) */}
         {/* Pilot */}
-        <div className="absolute top-[26%] left-[45%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.pilot)}</div>
+        <div className="absolute top-[28%] left-[45%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.pilot)}</div>
         {/* Co-pilot */}
-        <div className="absolute top-[26%] left-[55%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.coPilot)}</div>
+        <div className="absolute top-[28%] left-[55%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.coPilot)}</div>
         {/* Rear Seats */}
-        <div className="absolute top-[38%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.rearSeats)}</div>
+        <div className="absolute top-[43%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.rearSeats)}</div>
         {/* Fuel */}
-        <div className="absolute top-[33%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-blue-600">{fuelDisplay}</div>
+        <div className="absolute top-[34%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-blue-600">{fuelDisplay}</div>
         {/* Baggage A */}
-        <div className="absolute top-[55%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageA)}</div>
+        <div className="absolute top-[60%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageA)}</div>
         {/* Baggage B */}
-        <div className="absolute top-[62%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageB)}</div>
+        <div className="absolute top-[68%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageB)}</div>
          {/* Baggage C */}
-        <div className="absolute top-[69%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageC)}</div>
+        <div className="absolute top-[75%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageC)}</div>
       </div>
     </div>
   );
@@ -420,5 +463,7 @@ function CalculationRow({ label, value, isBold = false }: { label: string, value
     </div>
   );
 }
+
+    
 
     

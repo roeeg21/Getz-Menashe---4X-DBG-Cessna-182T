@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
@@ -66,6 +67,60 @@ const isCgWithinEnvelope = (weight: number, cg: number): boolean => {
   }
 
   return cg >= forwardLimit;
+};
+
+const AircraftDiagram = ({ weights, unit }: { weights: Weights; unit: string }) => {
+  const getDisplayValue = (lbs: number) => {
+    const value = unit === 'kg' ? Math.round(lbs / KG_TO_LB) : lbs;
+    return value > 0 ? `${value}${unit}` : '';
+  };
+  
+  const fuelGal = Math.round(weights.fuel / GAL_TO_LB);
+  const fuelDisplay = fuelGal > 0 ? `${fuelGal}gal` : '';
+
+  return (
+    <div className="relative my-4 w-full max-w-sm mx-auto">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 300 280"
+        aria-label="Cessna 182T Diagram"
+        className="w-full h-auto"
+      >
+        <g fill="#E2E8F0" stroke="#64748B" strokeWidth="1">
+          {/* Fuselage */}
+          <path d="M150 10 C 170 30, 180 80, 180 120 L 180 220 C 180 240, 170 250, 150 260 C 130 250, 120 240, 120 220 L 120 120 C 120 80, 130 30, 150 10 Z" />
+          
+          {/* Wings */}
+          <path d="M120 120 L 30 110 C 20 108, 20 132, 30 130 L 120 140 Z" />
+          <path d="M180 120 L 270 110 C 280 108, 280 132, 270 130 L 180 140 Z" />
+          
+          {/* Tail */}
+          <path d="M125 255 L 100 270 C 95 272, 95 278, 100 280 L 125 265 Z" />
+          <path d="M175 255 L 200 270 C 205 272, 205 278, 200 280 L 175 265 Z" />
+          <path d="M150 258 L 150 220 L 160 225 L 160 250 C 160 255, 155 258, 150 258 Z L 140 250 C 140 255, 145 258, 150 258 Z L 140 225 L 150 220" />
+
+          {/* Propeller */}
+          <circle cx="150" cy="10" r="10" fill="#CBD5E1" />
+        </g>
+      </svg>
+      <div className="absolute inset-0 text-xs font-semibold text-foreground">
+        {/* Pilot */}
+        <div className="absolute top-[28%] left-[37%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.pilot)}</div>
+        {/* Co-pilot */}
+        <div className="absolute top-[28%] left-[63%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.coPilot)}</div>
+        {/* Rear Seats */}
+        <div className="absolute top-[52%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.rearSeats)}</div>
+        {/* Fuel */}
+        <div className="absolute top-[43%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-blue-600">{fuelDisplay}</div>
+        {/* Baggage A */}
+        <div className="absolute top-[68%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageA)}</div>
+        {/* Baggage B */}
+        <div className="absolute top-[75%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageB)}</div>
+         {/* Baggage C */}
+        <div className="absolute top-[82%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageC)}</div>
+      </div>
+    </div>
+  );
 };
 
 
@@ -230,6 +285,9 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
         <CardDescription>Enter weights for each station to calculate total weight and center of gravity.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        
+        <AircraftDiagram weights={weights} unit={unitLabel} />
+
         {/* Inputs */}
         <WeightInput icon={User} label={STATIONS.pilot.label} value={getDisplayValue(weights.pilot)} onChange={e => handleWeightChange('pilot', e.target.value)} unit={unitLabel} />
         <WeightInput icon={User} label={STATIONS.coPilot.label} value={getDisplayValue(weights.coPilot)} onChange={e => handleWeightChange('coPilot', e.target.value)} unit={unitLabel} />

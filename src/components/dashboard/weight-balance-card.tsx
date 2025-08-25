@@ -79,45 +79,43 @@ const AircraftDiagram = ({ weights, unit }: { weights: Weights; unit: string }) 
   const fuelDisplay = fuelGal > 0 ? `${fuelGal}gal` : '';
 
   return (
-    <div className="relative my-4 w-full max-w-sm mx-auto">
+     <div className="relative my-4 w-full max-w-sm mx-auto p-4">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 300 280"
+        viewBox="0 0 1000 1000"
         aria-label="Cessna 182T Diagram"
         className="w-full h-auto"
       >
-        <g fill="#E2E8F0" stroke="#64748B" strokeWidth="1.5">
-          {/* Empennage (Tail Section) */}
-          <path d="M150 250 L 120 275 L 125 280 L 150 265 Z" />
-          <path d="M150 250 L 180 275 L 175 280 L 150 265 Z" />
-          <path d="M150 265 L 145 280 L 155 280 Z" />
-
-          {/* Main Fuselage */}
-          <path d="M150 20 C160 25, 175 40, 175 80 L 170 220 C 170 240, 160 250, 150 250 C 140 250, 130 240, 130 220 L 125 80 C 125 40, 140 25, 150 20 Z" />
-
-          {/* Wings */}
-          <path d="M125 90 L 25 105 L 20 95 L 125 85 Z" />
-          <path d="M175 90 L 275 105 L 280 95 L 175 85 Z" />
-
-          {/* Propeller Spinner */}
-          <path d="M150 20 Q140 10, 150 0 Q160 10, 150 20 Z" fill="#CBD5E1" />
+        <g stroke="#000000" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+            {/* Wings drawn first to be in the background */}
+            <polygon fill="#FFFFFF" points="470,250 120,250 60,270 120,430 470,430" />
+            <polygon fill="#FFFFFF" points="530,250 880,250 940,270 880,430 530,430" />
+            {/* Fuselage and Nose */}
+            <polygon fill="#FFFFFF" points="500,70 530,210 530,680 515,920 500,950 485,920 470,680 470,210" />
+            <polygon fill="#FFFFFF" points="500,50 515,70 485,70" />
+            {/* Tail (Empennage) */}
+            <polygon fill="#FFFFFF" points="485,700 440,700 420,900 485,900" />
+            <polygon fill="#FFFFFF" points="515,700 560,700 580,900 515,900" />
+            <polygon fill="#FFFFFF" points="500,950 500,750 480,720 520,720" />
+            {/* Canopy */}
+            <ellipse cx="500" cy="260" rx="60" ry="50" fill="#FFFFFF" />
         </g>
       </svg>
       <div className="absolute inset-0 text-xs font-semibold text-foreground">
         {/* Pilot */}
-        <div className="absolute top-[28%] left-[37%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.pilot)}</div>
+        <div className="absolute top-[26%] left-[45%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.pilot)}</div>
         {/* Co-pilot */}
-        <div className="absolute top-[28%] left-[63%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.coPilot)}</div>
+        <div className="absolute top-[26%] left-[55%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.coPilot)}</div>
         {/* Rear Seats */}
-        <div className="absolute top-[52%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.rearSeats)}</div>
+        <div className="absolute top-[38%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.rearSeats)}</div>
         {/* Fuel */}
-        <div className="absolute top-[38%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-blue-600">{fuelDisplay}</div>
+        <div className="absolute top-[33%] left-[50%] -translate-x-1/2 -translate-y-1/2 text-blue-600">{fuelDisplay}</div>
         {/* Baggage A */}
-        <div className="absolute top-[68%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageA)}</div>
+        <div className="absolute top-[55%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageA)}</div>
         {/* Baggage B */}
-        <div className="absolute top-[75%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageB)}</div>
+        <div className="absolute top-[62%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageB)}</div>
          {/* Baggage C */}
-        <div className="absolute top-[82%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageC)}</div>
+        <div className="absolute top-[69%] left-[50%] -translate-x-1/2 -translate-y-1/2">{getDisplayValue(weights.baggageC)}</div>
       </div>
     </div>
   );

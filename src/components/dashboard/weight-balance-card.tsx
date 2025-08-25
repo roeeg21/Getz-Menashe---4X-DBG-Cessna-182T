@@ -82,7 +82,7 @@ const AircraftDiagram = ({ weights, unit }: { weights: Weights; unit: string }) 
   return (
     <div className="relative my-4 w-full max-w-sm mx-auto aspect-[1/1]">
       <Image
-        src="https://storage.googleapis.com/stabl-media/6e5e5461-a065-4874-883a-4a814a601569.png"
+        src="/cessna-182t-schematic.png"
         alt="Cessna 182T Diagram"
         layout="fill"
         objectFit="contain"

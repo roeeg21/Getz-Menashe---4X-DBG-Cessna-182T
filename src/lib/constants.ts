@@ -66,24 +66,26 @@ export const AIRPORT_DATA: Record<string, AirportData> = {
   LLHA: {
     name: 'Haifa Airport',
     frequencies: [
-      { type: 'Tower', freq: '122.7 MHz' },
-      { type: 'Ground', freq: '121.9 MHz' },
-      { type: 'Approach', freq: '120.3 MHz' },
+      { type: 'Tower', freq: '133.00 MHz' },
+      { type: 'Ground / Secondary', freq: '127.80 MHz' },
+      { type: 'ATIS', freq: '135.40 MHz' },
     ],
   },
+  
   LLHZ: {
     name: 'Herzliya Airport',
     frequencies: [
-      { type: 'Tower', freq: '123.5 MHz' },
-      { type: 'Ground', freq: '121.8 MHz' },
-      { type: 'ATIS', freq: '128.8 MHz' },
+      { type: 'Tower / Ground', freq: '122.20 MHz' },
+      { type: 'Clearance / Control', freq: '121.825 MHz' },
+      { type: 'Training Area (Herzliya Training)', freq: '129.40 MHz' },
+      { type: 'Tower (Secondary)', freq: '118.55 MHz' },
     ],
   },
+  
   LLIB: {
     name: 'Rosh Pina Airport',
     frequencies: [
-      { type: 'Tower', freq: '122.1 MHz' },
-      { type: 'Approach', freq: '120.3 MHz' },
+      { type: 'Tower', freq: '118.45 MHz' },
     ],
   },
 };

@@ -16,10 +16,12 @@
     --secondary-foreground: 210 40% 9%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 210 25% 27%; /* #334455 */
-    --accent: 35 71% 42%; /* #B7791F */
+    --accent: 35 71% 42%; /* #B7791F - Warning */
     --accent-foreground: 210 40% 98%;
-    --destructive: 0 72% 41%; /* #B91C1C */
+    --destructive: 0 72% 41%; /* #B91C1C - Danger */
     --destructive-foreground: 0 0% 98%;
+    --success: 145 63% 30%; /* #1E7A3D - Success */
+    --success-foreground: 0 0% 98%;
     --border: 210 40% 89.8%;
     --input: 210 40% 89.8%;
     --ring: 212 65% 33%; /* #1E4E8C */

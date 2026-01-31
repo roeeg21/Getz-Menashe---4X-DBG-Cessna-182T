@@ -48,7 +48,11 @@
     "firebase": "^11.9.1",
     "genkit": "1.16.1",
     "lucide-react": "^0.475.0",
+<<<<<<< HEAD
     "next": "15.3.6",
+=======
+    "next": "15.3.8",
+>>>>>>> 122984e (add a page to this desboard according to this prd Product Requirements D)
     "patch-package": "^8.0.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",

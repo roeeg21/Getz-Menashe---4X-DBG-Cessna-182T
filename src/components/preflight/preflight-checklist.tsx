@@ -95,14 +95,14 @@ export default function PreflightChecklist() {
         </div>
         
         {isComplete && (
-            <div className="mb-6 flex flex-col items-center gap-4 rounded-lg border border-accent bg-card p-6 text-center">
+            <div className="mb-6 flex flex-col items-center gap-4 rounded-lg border border-accent bg-card p-6 text-center shadow-lg">
                 <CheckCircle2 className="h-12 w-12 text-accent"/>
                 <h2 className="text-2xl font-semibold text-accent-foreground">Preflight Complete</h2>
                 <p className="text-muted-foreground">You are ready for the next phase of flight preparation.</p>
             </div>
         )}
 
-      <Accordion type="single" collapsible className="w-full" defaultValue="cabin">
+      <Accordion type="single" collapsible className="w-full border-0" defaultValue="cabin">
         {PREFLIGHT_CHECKLIST.map((section, sectionIndex) => {
           const sectionItems = section.items;
           const completedInSection = sectionItems.filter(item => checkedItems[item.id]).length;
@@ -113,17 +113,17 @@ export default function PreflightChecklist() {
             <AccordionItem value={section.id} key={section.id}>
               <AccordionTrigger>
                 <div className="flex justify-between items-center w-full pr-4">
-                  <div className="flex items-center gap-3">
-                    <CheckCircle2 className={cn("h-5 w-5 transition-colors", isSectionComplete ? 'text-accent' : 'text-muted-foreground/50')} />
-                    <span className="text-base font-medium text-left">{section.title}</span>
+                  <div className="flex items-center gap-4">
+                    <CheckCircle2 className={cn("h-6 w-6 transition-colors", isSectionComplete ? 'text-accent' : 'text-muted-foreground/50')} />
+                    <span className="text-left">{section.title}</span>
                   </div>
-                  <span className="text-sm text-muted-foreground">{completedInSection} / {sectionItems.length}</span>
+                  <span className="text-base text-muted-foreground">{completedInSection} / {sectionItems.length}</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
                 <div className="flex flex-col gap-4 pt-4">
                   {sectionItems.map(item => (
-                    <div key={item.id} className="flex items-center justify-between rounded-md p-3 bg-muted/30">
+                    <div key={item.id} className="flex items-center justify-between rounded-md p-3 bg-muted/50">
                       <label htmlFor={item.id} className="text-base cursor-pointer">
                         {item.label}
                       </label>

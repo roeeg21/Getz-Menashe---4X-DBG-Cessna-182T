@@ -64,10 +64,10 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
   if (loading) {
     return (
        <div className="space-y-4">
-        <Skeleton className="h-6 w-3/4" />
-        <Skeleton className="h-24 w-full" />
-        <Skeleton className="h-24 w-full" />
-        <Skeleton className="h-40 w-full" />
+        <Skeleton className="h-8 w-3/4" />
+        <Skeleton className="h-28 w-full" />
+        <Skeleton className="h-28 w-full" />
+        <Skeleton className="h-44 w-full" />
       </div>
     );
   }
@@ -77,15 +77,15 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
   }
 
   return (
-    <div className="space-y-4">
-      <h4 className="font-semibold">{airport.name}</h4>
+    <div className="space-y-6">
+      <h4 className="font-bold text-xl">{airport.name}</h4>
       {/* METAR */}
-      <div className="flex flex-col gap-2 rounded-md border p-3">
+      <div className="flex flex-col gap-3 rounded-xl border-2 p-4 shadow-md">
         <div className="flex items-start gap-2">
             <CloudSun className="mt-1 h-5 w-5 text-primary shrink-0" />
             <div className="flex-1">
                 <div className="flex justify-between items-center mb-2">
-                    <p className="font-mono text-sm font-semibold">METAR</p>
+                    <p className="font-mono text-base font-semibold">METAR</p>
                     {metarCategory && <Badge className={cn('text-white', categoryStyles[metarCategory])}>{metarCategory}</Badge>}
                 </div>
             </div>
@@ -94,12 +94,12 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
       </div>
       
       {/* TAF */}
-      <div className="flex flex-col gap-2 rounded-md border p-3">
+      <div className="flex flex-col gap-3 rounded-xl border-2 p-4 shadow-md">
         <div className="flex items-start gap-2">
             <Wind className="mt-1 h-5 w-5 text-accent shrink-0" />
             <div className="flex-1">
                 <div className="flex justify-between items-center mb-2">
-                    <p className="font-mono text-sm font-semibold">TAF</p>
+                    <p className="font-mono text-base font-semibold">TAF</p>
                     {tafCategory && <Badge className={cn('text-white', categoryStyles[tafCategory])}>{tafCategory}</Badge>}
                 </div>
             </div>
@@ -108,27 +108,29 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
       </div>
       
       {/* Frequencies */}
-      <div>
-        <div className="flex items-center gap-2 mb-2">
+      <div className="flex flex-col gap-3 rounded-xl border-2 p-4 shadow-md">
+        <div className="flex items-center gap-2">
           <TowerControl className="h-5 w-5 text-primary" />
-          <p className="font-mono text-sm font-semibold">ATC Frequencies</p>
+          <p className="font-mono text-base font-semibold">ATC Frequencies</p>
         </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Type</TableHead>
-              <TableHead>Frequency</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {airport.frequencies.map((freq) => (
-              <TableRow key={freq.type}>
-                <TableCell>{freq.type}</TableCell>
-                <TableCell className="font-mono">{freq.freq}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <div className="border-t pt-3">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Type</TableHead>
+                  <TableHead>Frequency</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {airport.frequencies.map((freq) => (
+                  <TableRow key={freq.type}>
+                    <TableCell>{freq.type}</TableCell>
+                    <TableCell className="font-mono">{freq.freq}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+        </div>
       </div>
     </div>
   );
@@ -136,7 +138,7 @@ function WeatherInfo({ airportId, airport }: { airportId: string; airport: Airpo
 
 function WeatherTranslationDisplay({ weather }: { weather: TranslatedWeather }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm pt-2 border-t">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-sm pt-3 border-t">
        <div className="flex items-center gap-2"><Wind className="h-4 w-4 text-muted-foreground"/> <span>{weather.wind}</span></div>
        <div className="flex items-center gap-2"><Eye className="h-4 w-4 text-muted-foreground"/> <span>{weather.visibility}</span></div>
        <div className="flex items-center gap-2"><Cloud className="h-4 w-4 text-muted-foreground"/> <span>{weather.clouds}</span></div>
@@ -148,7 +150,7 @@ function WeatherTranslationDisplay({ weather }: { weather: TranslatedWeather }) 
 
 export default function AeroDataCard() {
   return (
-    <Card>
+    <Card className="border-2 shadow-lg rounded-xl">
       <CardHeader>
         <CardTitle>Aerodrome Data</CardTitle>
       </CardHeader>
@@ -168,7 +170,7 @@ export default function AeroDataCard() {
           {airportIdentifiers.map((id) => {
             const airport = AIRPORT_DATA[id];
             return (
-              <TabsContent key={id} value={id} className="mt-4">
+              <TabsContent key={id} value={id} className="mt-6">
                   <WeatherInfo airportId={id} airport={airport} />
               </TabsContent>
             );

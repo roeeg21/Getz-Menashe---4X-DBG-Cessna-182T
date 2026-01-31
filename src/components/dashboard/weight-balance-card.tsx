@@ -218,7 +218,7 @@ export default function WeightBalanceCard({ onUpdate }: WeightBalanceCardProps) 
   const isBaggageOverLimit = calculation.totalBaggageWeight > LIMITS.totalBaggageMax;
 
   return (
-    <Card className="h-full">
+    <Card className="h-full border-2 shadow-lg rounded-xl">
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>Weight &amp; Balance</CardTitle>

@@ -36,7 +36,7 @@ export default function DashboardClient() {
         <WeightBalanceCard onUpdate={setWbReport} />
       </div>
       <div className="flex flex-col gap-4 md:gap-8 lg:col-span-2">
-        <div className="rounded-xl bg-card p-4 shadow-sm">
+        <div className="rounded-xl border-2 bg-card p-6 shadow-lg">
           <CgEnvelopeChart
             totalWeight={wbReport.totalWeight}
             totalCg={wbReport.totalCg}

@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { PREFLIGHT_CHECKLIST, type ChecklistSection } from '@/lib/checklist-data';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { RotateCw, CheckCircle2 } from 'lucide-react';
@@ -124,13 +124,20 @@ export default function PreflightChecklist() {
                 <div className="flex flex-col gap-4 pt-4">
                   {sectionItems.map(item => (
                     <div key={item.id} className="flex items-center justify-between rounded-md p-3 bg-muted/50">
-                      <label htmlFor={item.id} className="text-base cursor-pointer">
+                      <label
+                        htmlFor={item.id}
+                        className={cn(
+                          "text-base cursor-pointer transition-colors",
+                          checkedItems[item.id] && "line-through text-muted-foreground"
+                        )}
+                      >
                         {item.label}
                       </label>
-                      <Switch
+                      <Checkbox
                         id={item.id}
                         checked={!!checkedItems[item.id]}
-                        onCheckedChange={checked => handleCheckChange(item.id, checked)}
+                        onCheckedChange={(checked) => handleCheckChange(item.id, !!checked)}
+                        className="h-6 w-6 rounded-full"
                       />
                     </div>
                   ))}

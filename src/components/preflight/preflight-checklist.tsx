@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { PREFLIGHT_CHECKLIST, type ChecklistSection } from '@/lib/checklist-data';
+import { PREFLIGHT_CHECKLIST, SOURCE_NOTES, type ChecklistSection } from '@/lib/checklist-data';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -102,7 +102,7 @@ export default function PreflightChecklist() {
             </div>
         )}
 
-      <Accordion type="single" collapsible className="w-full border-0" defaultValue="cabin">
+      <Accordion type="single" collapsible className="w-full border-0" defaultValue="preflight_cabin">
         {PREFLIGHT_CHECKLIST.map((section, sectionIndex) => {
           const sectionItems = section.items;
           const completedInSection = sectionItems.filter(item => checkedItems[item.id]).length;
@@ -121,10 +121,15 @@ export default function PreflightChecklist() {
                 </div>
               </AccordionTrigger>
               <AccordionContent>
+                {section.notes && section.notes.length > 0 && (
+                  <div className="mb-4 text-sm font-medium text-accent-foreground/80 bg-accent/10 p-3 rounded-md border border-accent/20">
+                    {section.notes.map((note, i) => <p key={i} className="font-semibold">{note}</p>)}
+                  </div>
+                )}
                 <div className="flex flex-col gap-4 pt-4">
                   {sectionItems.map(item => (
                     <div key={item.id} className="flex items-center gap-4 rounded-md p-3 bg-muted/50">
-                      <Checkbox
+                       <Checkbox
                         id={item.id}
                         checked={!!checkedItems[item.id]}
                         onCheckedChange={(checked) => handleCheckChange(item.id, !!checked)}
@@ -133,7 +138,7 @@ export default function PreflightChecklist() {
                       <label
                         htmlFor={item.id}
                         className={cn(
-                          "text-base cursor-pointer transition-colors",
+                          "flex-1 text-base cursor-pointer transition-colors",
                           checkedItems[item.id] && "line-through text-muted-foreground"
                         )}
                       >
@@ -152,8 +157,10 @@ export default function PreflightChecklist() {
           );
         })}
       </Accordion>
-      <footer className="mt-8 text-center text-xs text-muted-foreground">
-        <p>This app supplements the POH. The pilot in command is responsible for ensuring the aircraft is airworthy.</p>
+      <footer className="mt-8 space-y-2 text-center text-xs text-muted-foreground">
+        {SOURCE_NOTES.map((note, index) => (
+          <p key={index}>{note}</p>
+        ))}
       </footer>
     </div>
   );

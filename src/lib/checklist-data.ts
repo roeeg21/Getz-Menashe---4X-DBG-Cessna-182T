@@ -7,96 +7,105 @@ export type ChecklistSection = {
   id: string;
   title: string;
   items: ChecklistItem[];
+  notes?: string[];
 };
 
 export const PREFLIGHT_CHECKLIST: ChecklistSection[] = [
   {
-    id: 'cabin',
-    title: '1. Cabin Preflight Inspection',
+    id: 'preflight_cabin',
+    title: 'Cabin Preflight Inspection',
+    notes: ["REMOVE GUST LOCKS & PITOT COVER IF INSTALLED"],
     items: [
-      { id: 'cabin-1', label: 'Fuel Quantities — CHECK' },
-      { id: 'cabin-2', label: 'Inspections — CHECK DATES and TIMES' },
-      { id: 'cabin-3', label: 'Weight and Balance — WITHIN LIMITS' },
-      { id: 'cabin-4', label: 'Documents — CHECK' },
-      { id: 'cabin-5', label: 'Control Wheel Lock — REMOVE' },
-      { id: 'cabin-6', label: 'Ignition Switch — OFF' },
-      { id: 'cabin-7', label: 'Avionics Switch — OFF' },
-      { id: 'cabin-8', label: 'Master Switch — ON' },
-      { id: 'cabin-9', label: 'Avionics Switch — ON' },
-      { id: 'cabin-10', label: 'Avionics Cooling Fan — CHECK ON' },
-      { id: 'cabin-11', label: 'Avionics Switch — OFF' },
-      { id: 'cabin-12', label: 'Fuel Quantity Indicators — CHECK' },
-      { id: 'cabin-13', label: 'Flaps — EXTEND' },
-      { id: 'cabin-14', label: 'Interior and Exterior Lights — CHECK' },
-      { id: 'cabin-15', label: 'Pitot Heat — CHECK, then OFF' },
-      { id: 'cabin-16', label: 'Stall Warning Vane — CHECK' },
-      { id: 'cabin-17', label: 'Master Switch — OFF' },
-      { id: 'cabin-18', label: 'Cowl Flaps — OPEN' },
-      { id: 'cabin-19', label: 'Fuel Selector Valve — BOTH' },
-      { id: 'cabin-20', label: 'Fire Extinguisher — CHECK CHARGE' },
-    ],
-  },
-  {
-    id: 'empennage',
-    title: '2. Exterior Preflight — Empennage',
-    items: [
-      { id: 'emp-1', label: 'Antennas — CHECK' },
-      { id: 'emp-2', label: 'Baggage Door — LOCKED' },
-      { id: 'emp-3', label: 'Left Side of Fuselage — CHECK' },
-      { id: 'emp-4', label: 'Elevator and Trim Tab — CHECK' },
-      { id: 'emp-5', label: 'Rudder — CHECK' },
-      { id: 'emp-6', label: 'Tail Tie-Down — REMOVE' },
-      { id: 'emp-7', label: 'Position Light — CHECK' },
-      { id: 'emp-8', label: 'Right Side of Fuselage — CHECK' },
-    ],
-  },
-  {
-    id: 'right-wing',
-    title: '3. Exterior Preflight — Right Wing',
-    items: [
-        { id: 'rw-1', label: 'Flap — CHECK' },
-        { id: 'rw-2', label: 'Aileron — CHECK' },
-        { id: 'rw-3', label: 'Fuel Quantity — CHECK VISUALLY' },
-        { id: 'rw-4', label: 'Fuel Filler Cap — SECURE' },
-        { id: 'rw-5', label: 'Fuel Vent — CHECK' },
-        { id: 'rw-6', label: 'Wing Tie-Down — REMOVE' },
-        { id: 'rw-7', label: 'Main Wheel Tire — CHECK' },
-        { id: 'rw-8', label: 'Brake Assembly — CHECK' },
-        { id: 'rw-9', label: 'Fuel Sump — DRAIN' },
-        { id: 'rw-10', label: 'Wing Leading Edge — CHECK' },
-        { id: 'rw-11', label: 'Landing Light — CHECK' },
-        { id: 'rw-12', label: 'Stall Warning Opening — CHECK CLEAR' },
+      { id: 'preflight_cabin-1', label: 'Fuel Quantities — CHECK' },
+      { id: 'preflight_cabin-2', label: 'Inspections — CHECK DATES and TIMES' },
+      { id: 'preflight_cabin-3', label: 'Weight and CG — WITHIN LIMITS' },
+      { id: 'preflight_cabin-4', label: 'Documents — CHECK' },
+      { id: 'preflight_cabin-5', label: 'Control Wheel Lock — REMOVE' },
+      { id: 'preflight_cabin-6', label: 'Ignition Switch — OFF' },
+      { id: 'preflight_cabin-7', label: 'Avionics Switch — OFF' },
+      { id: 'preflight_cabin-8', label: 'Master Switch — ON' },
+      { id: 'preflight_cabin-9', label: 'Avionics Switch — ON' },
+      { id: 'preflight_cabin-10', label: 'Avionics Cooling Fan — CHECK ON' },
+      { id: 'preflight_cabin-11', label: 'Avionics Switch — OFF' },
+      { id: 'preflight_cabin-12', label: 'Fuel Quantity Indicators — CHECK' },
+      { id: 'preflight_cabin-13', label: 'Flaps — EXTEND' },
+      { id: 'preflight_cabin-14', label: 'Interior and Exterior Lights — CHECK' },
+      { id: 'preflight_cabin-15', label: 'Pitot Heat — CHECK THEN OFF' },
+      { id: 'preflight_cabin-16', label: 'Stall Warning Vane — CHECK' },
+      { id: 'preflight_cabin-17', label: 'Master Switch — OFF' },
+      { id: 'preflight_cabin-18', label: 'Cowl Flaps — OPEN' },
+      { id: 'preflight_cabin-19', label: 'Fuel Selector Valve — BOTH' },
+      { id: 'preflight_cabin-20', label: 'Fire Extinguisher — CHECK CHARGE' }
     ]
   },
   {
-    id: 'nose',
-    title: '4. Exterior Preflight — Nose',
+    id: 'preflight_exterior_empennage',
+    title: 'EXTERIOR PREFLIGHT INSPECTION — Empennage',
     items: [
-        { id: 'nose-1', label: 'Engine Oil Level — CHECK' },
-        { id: 'nose-2', label: 'Dipstick — SECURE' },
-        { id: 'nose-3', label: 'Engine Cooling Inlets — CHECK' },
-        { id: 'nose-4', label: 'Propeller and Spinner — CHECK' },
-        { id: 'nose-5', label: 'Air Filter — CHECK' },
-        { id: 'nose-6', label: 'Nose Wheel Strut — CHECK' },
-        { id: 'nose-7', label: 'Tire — CHECK' },
-        { id: 'nose-8', label: 'Tow Bar — REMOVE' },
+      { id: 'preflight_exterior_empennage-1', label: 'Antennas — CHECK' },
+      { id: 'preflight_exterior_empennage-2', label: 'Baggage Door — LOCKED' },
+      { id: 'preflight_exterior_empennage-3', label: 'Left Side of Fuselage — CHECK' },
+      { id: 'preflight_exterior_empennage-4', label: 'Control Surfaces — CHECK' },
+      { id: 'preflight_exterior_empennage-5', label: 'Tail Tie-down — REMOVE' },
+      { id: 'preflight_exterior_empennage-6', label: 'Position Light — CHECK' },
+      { id: 'preflight_exterior_empennage-7', label: 'Right Side of Fuselage — CHECK' }
     ]
   },
   {
-    id: 'left-wing',
-    title: '5. Exterior Preflight — Left Wing',
+    id: 'preflight_exterior_right_wing',
+    title: 'EXTERIOR PREFLIGHT INSPECTION — Right Wing',
     items: [
-        { id: 'lw-1', label: 'Fuel Sump — DRAIN' },
-        { id: 'lw-2', label: 'Main Wheel Tire — CHECK' },
-        { id: 'lw-3', label: 'Brake Assembly — CHECK' },
-        { id: 'lw-4', label: 'Wing Tie-Down — REMOVE' },
-        { id: 'lw-5', label: 'Fuel Quantity — CHECK VISUALLY' },
-        { id: 'lw-6', label: 'Fuel Filler Cap — SECURE' },
-        { id: 'lw-7', label: 'Wing Leading Edge — CHECK' },
-        { id: 'lw-8', label: 'Pitot Tube — CHECK CLEAR' },
-        { id: 'lw-9', label: 'Static Source — CHECK' },
-        { id: 'lw-10', label: 'Aileron — CHECK' },
-        { id: 'lw-11', label: 'Flap — CHECK' },
+      { id: 'preflight_exterior_right_wing-1', label: 'Flap and Aileron — CHECK' },
+      { id: 'preflight_exterior_right_wing-2', label: 'Position Light — CHECK' },
+      { id: 'preflight_exterior_right_wing-3', label: 'Strobe — CHECK' },
+      { id: 'preflight_exterior_right_wing-4', label: 'Wing — CHECK' },
+      { id: 'preflight_exterior_right_wing-5', label: 'Fuel Tank Vent — CHECK for BLOCKAGE' },
+      { id: 'preflight_exterior_right_wing-6', label: 'Wing Tie-down — REMOVE' },
+      { id: 'preflight_exterior_right_wing-7', label: 'Wing Root Vents — CHECK' },
+      { id: 'preflight_exterior_right_wing-8', label: 'Wheel Assembly — CHECK' },
+      { id: 'preflight_exterior_right_wing-9', label: 'Fuel Tank Sumps — (5) DRAIN and CHECK' },
+      { id: 'preflight_exterior_right_wing-10', label: 'Fuel Quantity — CHECK / CAP SECURE' }
+    ]
+  },
+  {
+    id: 'preflight_exterior_nose',
+    title: 'EXTERIOR PREFLIGHT INSPECTION — Nose',
+    items: [
+      { id: 'preflight_exterior_nose-1', label: 'Right Side Static Port — CHECK' },
+      { id: 'preflight_exterior_nose-2', label: 'Fuel Sumps — (3) DRAIN and CHECK' },
+      { id: 'preflight_exterior_nose-3', label: 'Cowling, Propeller and Spinner — CHECK' },
+      { id: 'preflight_exterior_nose-4', label: 'Air Inlets — CLEAR' },
+      { id: 'preflight_exterior_nose-5', label: 'Air Filter — CHECK' },
+      { id: 'preflight_exterior_nose-6', label: 'Nose Wheel Assembly — CHECK' },
+      { id: 'preflight_exterior_nose-7', label: 'Oil Quantity — (5-9 quarts) CHECK' },
+      { id: 'preflight_exterior_nose-8', label: 'Left Side Static Port — CHECK' },
+      { id: 'preflight_exterior_nose-9', label: 'Windshield — CLEAN and CHECK' }
+    ]
+  },
+  {
+    id: 'preflight_exterior_left_wing',
+    title: 'EXTERIOR PREFLIGHT INSPECTION — Left Wing',
+    items: [
+      { id: 'preflight_exterior_left_wing-1', label: 'Fuel Tank Sumps — (5) DRAIN and CHECK' },
+      { id: 'preflight_exterior_left_wing-2', label: 'Fuel Quantity — CHECK / CAP SECURE' },
+      { id: 'preflight_exterior_left_wing-3', label: 'Wing Root Vents — CHECK' },
+      { id: 'preflight_exterior_left_wing-4', label: 'Pitot Tube — CHECK' },
+      { id: 'preflight_exterior_left_wing-5', label: 'Stall Warning Opening — CHECK for BLOCKAGE' },
+      { id: 'preflight_exterior_left_wing-6', label: 'Wing Tie-down — REMOVE' },
+      { id: 'preflight_exterior_left_wing-7', label: 'Fuel Tank Vent — CHECK for BLOCKAGE' },
+      { id: 'preflight_exterior_left_wing-8', label: 'Wing — CHECK' },
+      { id: 'preflight_exterior_left_wing-9', label: 'Position Light — CHECK' },
+      { id: 'preflight_exterior_left_wing-10', label: 'Strobe — CHECK' },
+      { id: 'preflight_exterior_left_wing-11', label: 'Flap and Aileron — CHECK' },
+      { id: 'preflight_exterior_left_wing-12', label: 'Wheel Assembly — CHECK' }
     ]
   }
+];
+
+export const SOURCE_NOTES = [
+  "FOR TRAINING PURPOSES ONLY",
+  "This is an abbreviated checklist. Most explanatory items, notes cautions and warnings have been omitted for brevity.",
+  "Procedures in red/bold in this checklist should be committed to memory.",
+  "All performance speeds should be computed prior to flight using the Aircraft Owner’s Manual.",
+  "Users must be familiar with and operate in accordance with the official Aircraft Owner’s Manual."
 ];

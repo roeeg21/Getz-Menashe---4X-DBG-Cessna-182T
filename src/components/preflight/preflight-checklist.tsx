@@ -37,6 +37,7 @@ export default function PreflightChecklist() {
   useEffect(() => {
     setIsClient(true);
     try {
+      // When checklist changes, load its state or reset if none is saved
       const savedState = localStorage.getItem(getStorageKey(currentChecklistId));
       if (savedState) {
         setCheckedItems(JSON.parse(savedState));
@@ -59,14 +60,14 @@ export default function PreflightChecklist() {
     }
   }, [checkedItems, isClient, currentChecklistId]);
 
+
   const handleCheckChange = useCallback((itemId: string, isChecked: boolean) => {
     setCheckedItems(prev => ({ ...prev, [itemId]: isChecked }));
   }, []);
 
   const handleSectionReset = (section: ChecklistSection) => {
     const newCheckedItems = { ...checkedItems };
-    section.items.forEach(item => {
-      // The unique ID is section.id + item.n
+    section.items?.forEach(item => {
       const uniqueId = `${section.id}-${item.n}`;
       delete newCheckedItems[uniqueId];
     });
@@ -80,8 +81,13 @@ export default function PreflightChecklist() {
   const progress = useMemo(() => {
     const totalItems = currentChecklist.sections.reduce((sum, section) => sum + (section.items?.length || 0), 0);
     if (totalItems === 0) return 0;
-    const completedItems = Object.values(checkedItems).filter(Boolean).length;
-    return (completedItems / totalItems) * 100;
+    const completedItems = Object.keys(checkedItems).filter(key => checkedItems[key] && key.startsWith(currentChecklist.id)).length;
+    
+    // Correctly filter checked items for the current checklist
+    const allItemsForCurrentChecklist = currentChecklist.sections.flatMap(s => s.items?.map(i => `${s.id}-${i.n}`) ?? []);
+    const checkedForCurrent = allItemsForCurrentChecklist.filter(id => checkedItems[id]).length;
+    
+    return (checkedForCurrent / totalItems) * 100;
   }, [checkedItems, currentChecklist]);
   
   const isComplete = progress === 100;
@@ -157,7 +163,7 @@ export default function PreflightChecklist() {
             </div>
         )}
 
-      <Accordion type="single" collapsible className="w-full border-0" defaultValue="preflight_cabin">
+      <Accordion type="single" collapsible className="w-full" defaultValue={currentChecklist.sections[0]?.id}>
         {currentChecklist.sections.map((section) => {
           const sectionItems = section.items || [];
           const sectionEntries = section.entries || [];
@@ -210,27 +216,29 @@ export default function PreflightChecklist() {
                         const uniqueId = `${section.id}-${item.n}`;
                         return (
                         <div key={uniqueId} className="flex items-center gap-4 rounded-md p-3 bg-muted/50">
-                        <Checkbox
-                            id={uniqueId}
-                            checked={!!checkedItems[uniqueId]}
-                            onCheckedChange={(checked) => handleCheckChange(uniqueId, !!checked)}
-                            className="peer h-6 w-6 rounded-full"
-                        />
-                        <label
-                            htmlFor={uniqueId}
-                            className={cn(
-                            "flex-1 text-base cursor-pointer transition-colors peer-data-[state=checked]:line-through peer-data-[state=checked]:text-muted-foreground"
-                            )}
-                        >
-                            {item.text}
-                        </label>
+                          <Checkbox
+                              id={uniqueId}
+                              checked={!!checkedItems[uniqueId]}
+                              onCheckedChange={(checked) => handleCheckChange(uniqueId, !!checked)}
+                              className="peer h-6 w-6 rounded-full"
+                          />
+                          <label
+                              htmlFor={uniqueId}
+                              className={cn(
+                              "flex-1 text-base cursor-pointer transition-colors peer-data-[state=checked]:line-through peer-data-[state=checked]:text-muted-foreground"
+                              )}
+                          >
+                              {item.text}
+                          </label>
                         </div>
                     )})}
-                    <div className="flex justify-end mt-2">
-                        <Button variant="ghost" size="sm" onClick={() => handleSectionReset(section)}>
-                        <RotateCw className="mr-2 h-4 w-4" /> Reset Section
-                        </Button>
-                    </div>
+                    {totalInSection > 0 && (
+                      <div className="flex justify-end mt-2">
+                          <Button variant="ghost" size="sm" onClick={() => handleSectionReset(section)}>
+                          <RotateCw className="mr-2 h-4 w-4" /> Reset Section
+                          </Button>
+                      </div>
+                    )}
                     </div>
                 )}
               </AccordionContent>

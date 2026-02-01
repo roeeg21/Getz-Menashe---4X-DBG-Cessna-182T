@@ -123,7 +123,13 @@ export default function PreflightChecklist() {
               <AccordionContent>
                 <div className="flex flex-col gap-4 pt-4">
                   {sectionItems.map(item => (
-                    <div key={item.id} className="flex items-center justify-between rounded-md p-3 bg-muted/50">
+                    <div key={item.id} className="flex items-center gap-4 rounded-md p-3 bg-muted/50">
+                      <Checkbox
+                        id={item.id}
+                        checked={!!checkedItems[item.id]}
+                        onCheckedChange={(checked) => handleCheckChange(item.id, !!checked)}
+                        className="h-6 w-6 rounded-full"
+                      />
                       <label
                         htmlFor={item.id}
                         className={cn(
@@ -133,12 +139,6 @@ export default function PreflightChecklist() {
                       >
                         {item.label}
                       </label>
-                      <Checkbox
-                        id={item.id}
-                        checked={!!checkedItems[item.id]}
-                        onCheckedChange={(checked) => handleCheckChange(item.id, !!checked)}
-                        className="h-6 w-6 rounded-full"
-                      />
                     </div>
                   ))}
                   <div className="flex justify-end mt-2">

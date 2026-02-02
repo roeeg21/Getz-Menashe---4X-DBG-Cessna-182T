@@ -339,7 +339,7 @@ function WeightInput({ icon: Icon, label, value, onChange, unit, max }: { icon: 
         {label}
       </Label>
       <div className="col-span-2 relative">
-         <Input id={label} type="number" value={value} onChange={onChange} placeholder="0" className={`pr-10 ${hasWarning ? 'border-destructive' : ''}`} step="1" />
+         <Input id={label} type="number" inputMode="numeric" pattern="[0-9]*" value={value} onChange={onChange} placeholder="0" className={`pr-10 ${hasWarning ? 'border-destructive' : ''}`} step="1" />
          <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-sm text-muted-foreground">{unit}</span>
       </div>
       {max && (

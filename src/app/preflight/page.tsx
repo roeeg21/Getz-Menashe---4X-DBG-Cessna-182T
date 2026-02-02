@@ -16,7 +16,7 @@ export default function PreflightPage() {
             <h1 className="text-lg md:text-xl font-semibold">Preflight Checklist</h1>
         </div>
       </header>
-      <main className="flex flex-1 flex-col gap-4 p-2 sm:p-4 md:gap-8 md:p-8">
+      <main className="flex-1">
         <PreflightChecklist />
       </main>
     </div>

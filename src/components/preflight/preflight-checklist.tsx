@@ -2,12 +2,11 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { ALL_CHECKLISTS, SOURCE_NOTES, type ChecklistSection, type Checklist } from '@/lib/checklist-data';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { RotateCw, CheckCircle2 } from 'lucide-react';
+import { RotateCw, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
   Select,
@@ -27,6 +26,7 @@ function getStorageKey(checklistId: string) {
 
 export default function PreflightChecklist() {
   const [currentChecklistId, setCurrentChecklistId] = useState<string>(ALL_CHECKLISTS[0].id);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
   const [isClient, setIsClient] = useState(false);
 
@@ -37,7 +37,7 @@ export default function PreflightChecklist() {
   useEffect(() => {
     setIsClient(true);
     try {
-      // When checklist changes, load its state or reset if none is saved
+      setCurrentSectionIndex(0);
       const savedState = localStorage.getItem(getStorageKey(currentChecklistId));
       if (savedState) {
         setCheckedItems(JSON.parse(savedState));
@@ -78,23 +78,36 @@ export default function PreflightChecklist() {
     setCheckedItems({});
   };
 
-  const progress = useMemo(() => {
+  const handlePrevious = () => {
+    if (currentSectionIndex > 0) {
+      setCurrentSectionIndex(currentSectionIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentSectionIndex < currentChecklist.sections.length - 1) {
+      setCurrentSectionIndex(currentSectionIndex + 1);
+    }
+  };
+
+  const overallProgress = useMemo(() => {
     const totalItems = currentChecklist.sections.reduce((sum, section) => sum + (section.items?.length || 0), 0);
     if (totalItems === 0) return 0;
-    const completedItems = Object.keys(checkedItems).filter(key => checkedItems[key] && key.startsWith(currentChecklist.id)).length;
     
-    // Correctly filter checked items for the current checklist
-    const allItemsForCurrentChecklist = currentChecklist.sections.flatMap(s => s.items?.map(i => `${s.id}-${i.n}`) ?? []);
-    const checkedForCurrent = allItemsForCurrentChecklist.filter(id => checkedItems[id]).length;
+    const allItemIds = currentChecklist.sections.flatMap(s => s.items?.map(i => `${s.id}-${i.n}`) ?? []);
+    const checkedCount = allItemIds.filter(id => checkedItems[id]).length;
     
-    return (checkedForCurrent / totalItems) * 100;
+    return (checkedCount / totalItems) * 100;
   }, [checkedItems, currentChecklist]);
-  
-  const isComplete = progress === 100;
+
+  const isOverallComplete = overallProgress === 100;
+  const currentSection = currentChecklist.sections[currentSectionIndex];
+  const totalSections = currentChecklist.sections.length;
+  const stepProgress = totalSections > 0 ? ((currentSectionIndex + 1) / totalSections) * 100 : 0;
 
   if (!isClient) {
     return (
-        <div className="w-full max-w-4xl mx-auto space-y-4">
+        <div className="w-full max-w-4xl mx-auto space-y-4 p-4">
             <div className="flex items-center gap-4 mb-6">
                 <div className="flex-1 space-y-2">
                     <div className="h-4 bg-muted rounded-full w-full"></div>
@@ -112,144 +125,129 @@ export default function PreflightChecklist() {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="flex h-full flex-col">
+      <header className="flex flex-col gap-4 border-b p-4">
+        <div className="flex flex-col items-center gap-4 sm:flex-row">
+          <Select value={currentChecklistId} onValueChange={setCurrentChecklistId}>
+            <SelectTrigger className="w-full border-2 shadow-md sm:w-[300px]">
+              <SelectValue placeholder="Select a checklist..." />
+            </SelectTrigger>
+            <SelectContent>
+              {ALL_CHECKLISTS.map((checklist) => (
+                <SelectItem key={checklist.id} value={checklist.id}>
+                  {checklist.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
-             <Select value={currentChecklistId} onValueChange={setCurrentChecklistId}>
-                <SelectTrigger className="w-full sm:w-[300px] border-2 shadow-md">
-                    <SelectValue placeholder="Select a checklist..." />
-                </SelectTrigger>
-                <SelectContent>
-                    {ALL_CHECKLISTS.map((checklist) => (
-                        <SelectItem key={checklist.id} value={checklist.id}>
-                            {checklist.title}
-                        </SelectItem>
-                    ))}
-                </SelectContent>
-            </Select>
+          <div className="flex w-full flex-1 items-center gap-4">
+            <div className="flex-1">
+              <span className="mb-2 block text-center text-sm text-muted-foreground">
+                Step {currentSectionIndex + 1} of {totalSections}: {currentSection.title}
+              </span>
+              <Progress value={stepProgress} />
+            </div>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="sm">
+                  <RotateCw className="mr-2 h-4 w-4" /> Reset
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will reset the entire <span className="font-bold">{currentChecklist.title}</span>. All your checked items will be cleared.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={handleFullReset}>Reset</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </div>
+      </header>
 
-           <div className="flex-1 w-full flex items-center gap-4">
-                <div className="flex-1">
-                    <Progress value={progress} />
-                    <p className="text-sm text-muted-foreground mt-2">{Math.round(progress)}% Complete</p>
+      <main className="flex-1 space-y-6 overflow-y-auto p-4 md:p-6">
+        <div className="rounded-xl border-2 bg-card p-6 shadow-lg">
+          <h2 className="mb-4 text-xl font-bold">{currentSection.title}</h2>
+          
+          {currentSection.notes && currentSection.notes.length > 0 && (
+            <div className="mb-4 rounded-lg border-2 border-destructive bg-destructive/10 p-4 shadow-inner">
+              {currentSection.notes.map((note, i) => (
+                <p key={i} className="text-center text-base font-bold uppercase text-destructive">{note}</p>
+              ))}
+            </div>
+          )}
+
+          {currentSection.type === 'reference_table' && currentSection.entries && (
+            <div className="space-y-2 text-sm">
+              {currentSection.entries.map(entry => (
+                <div key={entry.key} className="flex justify-between items-center rounded-md bg-muted/50 p-3">
+                  <span className="font-medium">{entry.key}</span>
+                  <span className="font-mono">{entry.value}</span>
                 </div>
-                <AlertDialog>
-                <AlertDialogTrigger asChild>
-                    <Button variant="destructive" size="sm">
-                    <RotateCw className="mr-2 h-4 w-4" /> Reset
-                    </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                        This will reset the entire <span className="font-bold">{currentChecklist.title}</span>. All your checked items will be cleared.
-                    </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleFullReset}>Reset</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-                </AlertDialog>
-           </div>
+              ))}
+            </div>
+          )}
+
+          {currentSection.type === 'reference_note' && currentSection.text && (
+            <div className="rounded-md bg-muted/30 p-4 text-sm italic text-muted-foreground">
+              <p>{currentSection.text}</p>
+            </div>
+          )}
+
+          {currentSection.items && currentSection.items.length > 0 && (
+            <div className="flex flex-col gap-4 pt-4">
+              {currentSection.items.map(item => {
+                const uniqueId = `${currentSection.id}-${item.n}`;
+                return (
+                  <div key={uniqueId} className="flex items-center gap-4 rounded-md bg-muted/50 p-3">
+                    <Checkbox
+                      id={uniqueId}
+                      checked={!!checkedItems[uniqueId]}
+                      onCheckedChange={(checked) => handleCheckChange(uniqueId, !!checked)}
+                      className="peer h-6 w-6 rounded-full"
+                    />
+                    <label
+                      htmlFor={uniqueId}
+                      className={cn(
+                        "flex-1 cursor-pointer text-base transition-colors peer-data-[state=checked]:text-muted-foreground peer-data-[state=checked]:line-through"
+                      )}
+                    >
+                      {item.text}
+                    </label>
+                  </div>
+                )
+              })}
+              <div className="mt-2 flex justify-end">
+                <Button variant="ghost" size="sm" onClick={() => handleSectionReset(currentSection)}>
+                  <RotateCw className="mr-2 h-4 w-4" /> Reset Section
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
         
-        {isComplete && (
-            <div className="mb-6 flex flex-col items-center gap-4 rounded-lg border-2 border-accent bg-card p-6 text-center shadow-lg">
+        {currentSectionIndex === totalSections - 1 && isOverallComplete && (
+            <div className="flex flex-col items-center gap-4 rounded-lg border-2 border-accent bg-card p-6 text-center shadow-lg">
                 <CheckCircle2 className="h-12 w-12 text-accent"/>
                 <h2 className="text-2xl font-semibold text-accent-foreground">Checklist Complete</h2>
-                <p className="text-muted-foreground">You are ready for the next phase of flight preparation.</p>
+                <p className="text-muted-foreground">You have completed all items in the {currentChecklist.title}.</p>
             </div>
         )}
+      </main>
 
-      <Accordion type="single" collapsible className="w-full" defaultValue={currentChecklist.sections[0]?.id}>
-        {currentChecklist.sections.map((section) => {
-          const sectionItems = section.items || [];
-          const sectionEntries = section.entries || [];
-          const totalInSection = sectionItems.length;
-          const completedInSection = sectionItems.filter(item => {
-              const uniqueId = `${section.id}-${item.n}`;
-              return checkedItems[uniqueId];
-          }).length;
-          const sectionProgress = totalInSection > 0 ? (completedInSection / totalInSection) * 100 : 0;
-          const isSectionComplete = sectionProgress === 100 && totalInSection > 0;
-
-          return (
-            <AccordionItem value={section.id} key={section.id}>
-              <AccordionTrigger>
-                <div className="flex justify-between items-center w-full pr-4">
-                  <div className="flex items-center gap-4">
-                    {totalInSection > 0 && <CheckCircle2 className={cn("h-6 w-6 transition-colors", isSectionComplete ? 'text-accent' : 'text-muted-foreground/50')} />}
-                    <span className="text-left">{section.title}</span>
-                  </div>
-                  {totalInSection > 0 && <span className="text-base text-muted-foreground">{completedInSection} / {totalInSection}</span>}
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                {section.notes && section.notes.length > 0 && (
-                  <div className="mb-4 rounded-lg border-2 border-destructive bg-destructive/10 p-4 shadow-inner">
-                    {section.notes.map((note, i) => <p key={i} className="text-center text-base font-bold uppercase text-destructive">{note}</p>)}
-                  </div>
-                )}
-                
-                {section.type === 'reference_table' && sectionEntries.length > 0 && (
-                    <div className="space-y-2 pt-2 text-sm">
-                        {sectionEntries.map(entry => (
-                            <div key={entry.key} className="flex justify-between items-center bg-muted/50 p-3 rounded-md">
-                                <span className="font-medium">{entry.key}</span>
-                                <span className="font-mono">{entry.value}</span>
-                            </div>
-                        ))}
-                    </div>
-                )}
-
-                {section.type === 'reference_note' && section.text && (
-                    <div className="pt-2 text-sm text-muted-foreground italic bg-muted/30 p-4 rounded-md">
-                        <p>{section.text}</p>
-                    </div>
-                )}
-
-                {sectionItems.length > 0 && (
-                    <div className="flex flex-col gap-4 pt-4">
-                    {sectionItems.map(item => {
-                        const uniqueId = `${section.id}-${item.n}`;
-                        return (
-                        <div key={uniqueId} className="flex items-center gap-4 rounded-md p-3 bg-muted/50">
-                          <Checkbox
-                              id={uniqueId}
-                              checked={!!checkedItems[uniqueId]}
-                              onCheckedChange={(checked) => handleCheckChange(uniqueId, !!checked)}
-                              className="peer h-6 w-6 rounded-full"
-                          />
-                          <label
-                              htmlFor={uniqueId}
-                              className={cn(
-                              "flex-1 text-base cursor-pointer transition-colors peer-data-[state=checked]:line-through peer-data-[state=checked]:text-muted-foreground"
-                              )}
-                          >
-                              {item.text}
-                          </label>
-                        </div>
-                    )})}
-                    {totalInSection > 0 && (
-                      <div className="flex justify-end mt-2">
-                          <Button variant="ghost" size="sm" onClick={() => handleSectionReset(section)}>
-                          <RotateCw className="mr-2 h-4 w-4" /> Reset Section
-                          </Button>
-                      </div>
-                    )}
-                    </div>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
-      <footer className="mt-8 space-y-2 text-center text-xs text-muted-foreground">
-        {SOURCE_NOTES.map((note, index) => (
-          <p key={index}>{note}</p>
-        ))}
+      <footer className="flex items-center justify-between border-t bg-background p-4">
+        <Button onClick={handlePrevious} disabled={currentSectionIndex === 0} size="lg" variant="outline">
+          <ChevronLeft className="mr-2 h-5 w-5" /> Previous
+        </Button>
+        <Button onClick={handleNext} disabled={currentSectionIndex >= totalSections - 1} size="lg">
+          Next <ChevronRight className="ml-2 h-5 w-5" />
+        </Button>
       </footer>
     </div>
   );

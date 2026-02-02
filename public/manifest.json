@@ -4,19 +4,19 @@
   "description": "Weight & Balance, Weather, and AI-powered flight tools for the Cessna 182T.",
   "icons": [
     {
-      "src": "/icons/icon-192.svg",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml"
+      "type": "image/png+xml"
     },
     {
-      "src": "/icons/icon-512.svg",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/png+xml"
     },
     {
-      "src": "/icons/maskable_icon.svg",
+      "src": "/icons/maskable_icon.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png+xml",
       "purpose": "maskable"
     }
   ],
